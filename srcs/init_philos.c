@@ -6,7 +6,7 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 18:52:03 by esali             #+#    #+#             */
-/*   Updated: 2023/08/30 19:21:22 by esali            ###   ########.fr       */
+/*   Updated: 2023/08/30 19:34:12 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,14 @@ t_philo	*ft_lstnew(int number, t_philo *prv_philo)
 
 /*void	init_philos(int amount)
 {
-	int	i;
+	t_philo	*old_p;
+	t_philo	*new_p;
+	int		i;
 
+	i = 0;
+	old_p = get_ps()
+	while (i < amount)
+	{
+
+	}
 }*/
