@@ -6,19 +6,19 @@
 #    By: esali <esali@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/18 13:16:13 by esali             #+#    #+#              #
-#    Updated: 2023/08/26 15:31:08 by esali            ###   ########.fr        #
+#    Updated: 2023/08/30 15:34:18 by esali            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME 		= philosophers
 
-SRCS 		= srcs/main.c
+SRCS 		= srcs/main.c srcs/init_args.c srcs/philosophers.c
 
 OBJS 		= $(SRCS:.c=.o)
 
 CC			= gcc
 RM			= rm
-CFLAGS		= #-Wall -Wextra -Werror -fsanitize=address -g
+CFLAGS		= -Wall -Wextra -Werror -fsanitize=address -g
 
 all:		$(NAME)
 
