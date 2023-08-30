@@ -6,13 +6,13 @@
 #    By: esali <esali@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/18 13:16:13 by esali             #+#    #+#              #
-#    Updated: 2023/08/30 15:34:18 by esali            ###   ########.fr        #
+#    Updated: 2023/08/30 18:56:41 by esali            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME 		= philosophers
 
-SRCS 		= srcs/main.c srcs/init_args.c srcs/philosophers.c
+SRCS 		= srcs/main.c srcs/init_args.c srcs/philosophers.c srcs/init_philos.c
 
 OBJS 		= $(SRCS:.c=.o)
 

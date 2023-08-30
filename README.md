@@ -26,9 +26,7 @@
 
 ## Functions
 
-**memset**:
-
-**usleep**:
+**memset**: void *memset(void *ptr, int x, size_t n). Fills a size of n area with char x in ptr.
 
 **gettimeofday**:
 
@@ -45,3 +43,8 @@
 **pthread_mutex_lock**: locks the following code lines. Takes address to variable as only argument
 
 **pthread_mutex_unlock**: unlocks the previous locked thread. Takes adress to variable as only argument
+
+
+## IDEE
+
+1. create double linked list of philo struct. Each Philo has a fork
