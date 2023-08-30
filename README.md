@@ -16,6 +16,32 @@
 
 ◦ **number_of_times_each_philosopher_must_eat (optional argument)**: If all philosophers have eaten at least number_of_times_each_philosopher_must_eat times, the simulation stops. If not specified, the simulation stops when a   philosopher dies.
 
+## Concepts
+
+**THREADS**: simultanous execution of code. Difference to processes is, that memory is shared
+
+**MUTEX**: Lock around a section of code to counter race conditions. Protects code lines against other threads trying to execute simultanously.
+
+**Race condition**:
+
 ## Functions
 
-**pthread_create()**:
+**memset**:
+
+**usleep**:
+
+**gettimeofday**:
+
+**pthread_create**:
+
+**pthread_detach**:
+
+**pthread_join**: takes two paramenters. 1. the value of 'pthread_t' variable and void **ret. ret is a variable in which the return value of the called function from p_thread_create can be saved in.
+
+**pthread_mutex_init**: initializes a mutex. First parameter is the adress to a 'pthread_mutex_t' type variable. Second one is attributes, when passing NULL, they are set to default
+
+**pthread_mutex_destroy**: destroys the created mutex. Takes adress to the 'pthread_mutex_t' type variable as only argument
+
+**pthread_mutex_lock**: locks the following code lines. Takes address to variable as only argument
+
+**pthread_mutex_unlock**: unlocks the previous locked thread. Takes adress to variable as only argument
