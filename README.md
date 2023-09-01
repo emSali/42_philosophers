@@ -36,7 +36,7 @@
 
 **pthread_join**: takes two paramenters. 1. the value of 'pthread_t' variable and void **ret. ret is a variable in which the return value of the called function from p_thread_create can be saved in.
 
-**pthread_mutex_init**: initializes a mutex. First parameter is the adress to a 'pthread_mutex_t' type variable. Second one is attributes, when passing NULL, they are set to default
+**pthread_mutex_init**: initializes a mutex. Fiphilosopher_staterst parameter is the adress to a 'pthread_mutex_t' type variable. Second one is attributes, when passing NULL, they are set to default
 
 **pthread_mutex_destroy**: destroys the created mutex. Takes adress to the 'pthread_mutex_t' type variable as only argument
 
@@ -47,4 +47,6 @@
 
 ## IDEE
 
-1. create double linked list of philo struct. Each Philo has a fork
+1. change to linked list with two struct forks in between
+2. create elements in while loop
+
