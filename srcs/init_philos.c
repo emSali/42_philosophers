@@ -6,18 +6,11 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 18:52:03 by esali             #+#    #+#             */
-/*   Updated: 2023/09/01 14:22:20 by esali            ###   ########.fr       */
+/*   Updated: 2023/09/01 17:03:02 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../philosophers.h"
-
-t_philo	*get_ps()
-{
-	static t_philo	list;
-
-	return (&list);
-}
 
 t_philo	*ft_lstnew(int number, t_philo *prv_philo)
 {
@@ -26,6 +19,7 @@ t_philo	*ft_lstnew(int number, t_philo *prv_philo)
 	new_philo = (t_philo *)malloc(sizeof(t_philo));
 	if (!new_philo)
 		return (NULL);
+	new_philo->nr_eat = 0;
 	new_philo->nr = number;
 	new_philo->is_sleeping = 0;
 	new_philo->is_eating = 0;
@@ -68,7 +62,6 @@ void	free_philos(int amount)
 		node = tmp;
 		i++;
 	}
-	//free(node);
 	get_ps()->nxt = NULL;
 }
 

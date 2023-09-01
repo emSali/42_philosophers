@@ -6,11 +6,32 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/18 13:05:28 by esali             #+#    #+#             */
-/*   Updated: 2023/09/01 14:21:56 by esali            ###   ########.fr       */
+/*   Updated: 2023/09/01 16:29:14 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philosophers.h"
+
+int	main(int argc, char **argv)
+{
+	if (argc < 5 || argc > 6)
+	{
+		printf("Too many arguments\n");
+		return (1);
+	}
+	if (init_args(argv))
+		return (1);
+	init_philos(get_args()->nr_philo);
+	init_threads();
+	free_philos(get_args()->nr_philo);
+	return (0);
+}
+
+
+
+
+
+
 
 void*	print_thread(void *i)
 {
@@ -50,18 +71,4 @@ void	create_threads(int *args)
 	free(t);
 }
 
-int	main(int argc, char **argv)
-{
-	int		*args;
 
-	if (argc < 5 || argc > 6)
-		return (0);
-	args = init_args(argv, argc);
-	if (!args)
-		return (1);
-	init_philos(args[0]);
-	print_philos();
-	free_philos(args[0]);
-	free(args);
-	return (0);
-}
