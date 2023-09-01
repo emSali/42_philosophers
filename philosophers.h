@@ -6,7 +6,7 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/18 13:05:57 by esali             #+#    #+#             */
-/*   Updated: 2023/08/30 19:20:26 by esali            ###   ########.fr       */
+/*   Updated: 2023/09/01 14:21:26 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ typedef struct	s_philo
 
 int		*init_args(char **argv, int nr);
 t_philo	*get_ps();
-
+void	init_philos(int amount);
+void	free_philos(int amount);
+void	print_philos();
 
 #endif

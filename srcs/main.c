@@ -6,7 +6,7 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/18 13:05:28 by esali             #+#    #+#             */
-/*   Updated: 2023/08/30 19:10:06 by esali            ###   ########.fr       */
+/*   Updated: 2023/09/01 14:21:56 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,9 @@ int	main(int argc, char **argv)
 	args = init_args(argv, argc);
 	if (!args)
 		return (1);
-	//create_threads(args);
+	init_philos(args[0]);
+	print_philos();
+	free_philos(args[0]);
 	free(args);
 	return (0);
 }
