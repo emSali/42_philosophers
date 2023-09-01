@@ -6,7 +6,7 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 15:05:11 by esali             #+#    #+#             */
-/*   Updated: 2023/08/30 15:06:44 by esali            ###   ########.fr       */
+/*   Updated: 2023/09/01 16:34:36 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,25 +29,25 @@ int	get_nr(char *str)
 	return (ret);
 }
 
-int	*init_args(char **argv, int nr)
+int	init_args(char **argv)
 {
-	int	*args;
-	int	i;
+	t_args	*args;
 
-	i = 1;
-	args = (int *)malloc(sizeof(int) * nr);
-	if (!args)
-		return (NULL);
-	while (argv[i])
+	args = get_args();
+	args->nr_philo = get_nr(argv[1]);
+	args->time_to_die = get_nr(argv[2]);
+	args->time_to_eat = get_nr(argv[3]);
+	args->time_to_sleep = get_nr(argv[4]);
+	if (argv[5])
+		args->min_nr_eat = get_nr(argv[5]);
+	else
+		args->min_nr_eat = 0;
+	if (args->nr_philo < 0 || args->time_to_die < 0 || args->time_to_eat < 0 || args->time_to_sleep < 0 || args->min_nr_eat < 0)
 	{
-		args[i - 1] = get_nr(argv[i]);
-		if (args[i - 1] < 0)
-		{
 			printf("\nthe arguments can only contain numeric characters");
-			free(args);
-			return (NULL);
-		}
-		i++;
+			return (1);
 	}
-	return (args);
+	return (0);
 }
+
+
