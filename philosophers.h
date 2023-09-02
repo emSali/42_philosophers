@@ -6,7 +6,7 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/18 13:05:57 by esali             #+#    #+#             */
-/*   Updated: 2023/09/01 18:21:49 by esali            ###   ########.fr       */
+/*   Updated: 2023/09/02 12:58:11 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ typedef struct	s_philo
 	int				is_sleeping;
 	int				nr_eat;
 	pthread_t		t;
+	pthread_mutex_t	m;
 	struct s_philo	*nxt;
 	struct s_philo	*prv;
 }		t_philo;
@@ -34,7 +35,7 @@ typedef struct	s_fork
 {
 	pthread_mutex_t	m;
 
-}
+}		t_fork;
 
 typedef struct s_args
 {
