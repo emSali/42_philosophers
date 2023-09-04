@@ -5,14 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/30 18:52:03 by esali             #+#    #+#             */
-/*   Updated: 2023/09/04 13:33:27 by esali            ###   ########.fr       */
+/*   Created: 2023/09/04 17:44:39 by esali             #+#    #+#             */
+/*   Updated: 2023/09/04 18:29:25 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../philosophers.h"
+#include "../philo.h"
 
-t_philo	*ft_lstnew(int number, t_philo *prv_philo)
+t_philo	*new_philo(int number, t_args *args, t_fork *left, t_fork *right)
 {
 	t_philo	*new_philo;
 
@@ -20,47 +20,63 @@ t_philo	*ft_lstnew(int number, t_philo *prv_philo)
 	if (!new_philo)
 		return (NULL);
 	new_philo->nr_eat = 0;
-	new_philo->nr = number;
-	new_philo->is_sleeping = 0;
-	new_philo->is_eating = 0;
-	new_philo->prv = prv_philo;
-	new_philo->nxt = NULL;
-	prv_philo->nxt = new_philo;
+	new_philo->nr = number + 1;
+	new_philo->args = args;
+	new_philo->left = left;
+	new_philo->right = right;
 	return (new_philo);
 }
 
-void	init_philos(int amount)
+t_fork	*new_fork()
 {
-	t_philo	*old_p;
-	t_philo	*first_p;
-	int		i;
+	t_fork	*new_fork;
 
-	i = 0;
-	old_p = get_ps();
-	while (i < amount)
-	{
-		old_p = ft_lstnew(i + 1, old_p);
-		i++;
-	}
-	first_p = get_ps()->nxt;
-	first_p->prv = old_p;
-	old_p->nxt = first_p;
+	new_fork = (t_fork *)malloc(sizeof(t_fork));
+	if (!new_fork)
+		return (NULL);
+	pthread_mutex_init(&(new_fork->m), NULL);
+	new_fork->is_busy = 0;
+	return (new_fork);
 }
 
-void	free_philos(int amount)
+t_philo	**init_philos(t_args *args)
 {
-	t_philo	*node;
-	t_philo	*tmp;
+	t_philo	**ps;
+	t_fork	*first_left;
+	t_fork	*left;
+	t_fork	*right;
+	int		i;
+
+	ps = (t_philo **)malloc(sizeof(t_philo) * args->nr_philo);
+	if (!ps)
+		return (NULL);
+	i = 0;
+	right = new_fork();
+	first_left = right;
+	while (i < (args->nr_philo - 1))
+	{
+		left = right;
+		right = new_fork();
+		ps[i] = new_philo(i, args, left, right);
+		i++;
+	}
+	ps[i] = new_philo(i, args, right, first_left);
+	return (ps);
+}
+
+void	free_philos(t_philo **ps)
+{
+	t_args	*args;
 	int		i;
 
 	i = 0;
-	node = get_ps()->nxt;
-	while (i < amount)
+	args = get_args();
+	while (i < args->nr_philo)
 	{
-		tmp = node->nxt;
-		free(node);
-		node = tmp;
+		pthread_mutex_destroy(&(ps[i]->left->m));
+		free(ps[i]->left);
+		free(ps[i]);
 		i++;
 	}
-	get_ps()->nxt = NULL;
+	free(ps);
 }

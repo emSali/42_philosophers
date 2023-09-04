@@ -6,7 +6,7 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 15:07:44 by esali             #+#    #+#             */
-/*   Updated: 2023/09/04 15:12:38 by esali            ###   ########.fr       */
+/*   Updated: 2023/09/04 17:07:57 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,20 +36,6 @@ int	wait_for_fork(t_philo *p, t_args *args)
 	if (args->philo_is_dead)
 		return (1);
 	return (0);
-}
-
-void	eat(t_philo *p, t_args *args)
-{
-	pthread_mutex_lock(&(p->m));
-	if (!(p->prv->is_eating) && !(p->nxt->is_eating))
-	{
-		p->is_eating = 1;
-		pthread_mutex_unlock(&(p->m));
-		gettimeofday(&(p->last_eat), NULL);
-		printf("%ld %i is eating\n", p->last_eat.tv_usec, p->nr);
-		usleep(args->time_to_eat);
-		p->is_eating = 0;
-	}
 }
 
 int	eat_sleep_think(t_philo *p, t_args *args)

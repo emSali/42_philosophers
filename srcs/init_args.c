@@ -6,11 +6,11 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 15:05:11 by esali             #+#    #+#             */
-/*   Updated: 2023/09/04 13:32:31 by esali            ###   ########.fr       */
+/*   Updated: 2023/09/04 18:02:54 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../philosophers.h"
+#include "../philo.h"
 
 int	get_nr(char *str)
 {
@@ -52,4 +52,13 @@ int	init_args(char **argv)
 			return (1);
 	}
 	return (0);
+}
+
+/* Static variables have the property of preserving
+their value even after they are out of their scope*/
+t_args	*get_args()
+{
+	static t_args	args;
+
+	return (&args);
 }
