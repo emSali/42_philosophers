@@ -6,7 +6,7 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 15:05:11 by esali             #+#    #+#             */
-/*   Updated: 2023/09/02 19:22:39 by esali            ###   ########.fr       */
+/*   Updated: 2023/09/04 12:46:52 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,11 @@ int	init_args(char **argv)
 	args->time_to_die = get_nr(argv[2]);
 	args->time_to_eat = get_nr(argv[3]);
 	args->time_to_sleep = get_nr(argv[4]);
+	args->philo_is_dead = 0;
 	if (argv[5])
-	{
 		args->min_nr_eat = get_nr(argv[5]);
-		if (args->min_nr_eat < 1)
-			return (1);
-	}
 	else
-		args->min_nr_eat = 0;
+		args->min_nr_eat = 2147483647;
 	if (args->nr_philo < 2 || args->time_to_die < 1 || args->time_to_eat < 0 || args->time_to_sleep < 0)
 	{
 			printf("\nthe arguments are not correct");
