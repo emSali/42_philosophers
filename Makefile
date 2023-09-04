@@ -6,7 +6,7 @@
 #    By: esali <esali@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/18 13:16:13 by esali             #+#    #+#              #
-#    Updated: 2023/08/18 13:21:51 by esali            ###   ########.fr        #
+#    Updated: 2023/08/26 15:31:08 by esali            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,12 +18,12 @@ OBJS 		= $(SRCS:.c=.o)
 
 CC			= gcc
 RM			= rm
-CFLAGS		= -Wall -Wextra -Werror -fsanitize=address -g
+CFLAGS		= #-Wall -Wextra -Werror -fsanitize=address -g
 
 all:		$(NAME)
 
 $(NAME):	$(OBJS)
-			gcc ${CFLAGS} ${OBJS} -o ${NAME}
+			gcc -g -pthread ${CFLAGS} ${OBJS} -o ${NAME}
 
 clean:
 			$(RM) $(OBJS)
