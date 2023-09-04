@@ -6,7 +6,7 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 15:07:44 by esali             #+#    #+#             */
-/*   Updated: 2023/09/04 12:47:27 by esali            ###   ########.fr       */
+/*   Updated: 2023/09/04 13:31:02 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,13 @@ int	wait_for_fork(t_philo *p)
 	while(p->prv->is_eating || p->nxt->is_eating)
 	{
 		gettimeofday(&(p->get_time), NULL);
-		printf("%i:	diff:%d\n",p->nr, p->get_time.tv_usec - p->last_eat.tv_usec);
+		//printf("%i:	diff:%ld\n",p->nr, p->get_time.tv_usec - p->last_eat.tv_usec);
 		if ((p->get_time.tv_usec - p->last_eat.tv_usec) > args->time_to_die \
 		&& p->nr_eat < args->min_nr_eat)
 		{
 			args->philo_is_dead = 1;
-			printf("%d %i died\n", p->get_time.tv_usec, p->nr);
-			return (10);
+			printf("%ld %i died\n", p->get_time.tv_usec, p->nr);
+			return (1);
 		}
 		usleep(1);
 	}
@@ -47,7 +47,7 @@ int	eat_sleep_think(t_philo *p)
 	{
 		p->is_eating = 1;
 		gettimeofday(&(p->last_eat), NULL);
-		printf("%d %i is eating\n", p->last_eat.tv_usec, p->nr);
+		printf("%ld %i is eating\n", p->last_eat.tv_usec, p->nr);
 		usleep(args->time_to_eat);
 		p->is_eating = 0;
 	}
@@ -55,12 +55,13 @@ int	eat_sleep_think(t_philo *p)
 		return (1);
 	pthread_mutex_unlock(&(p->m));
 	gettimeofday(&(p->get_time), NULL);
-	printf("%d %i is sleeping\n", p->get_time.tv_usec, p->nr);
+	printf("%ld %i is sleeping\n", p->get_time.tv_usec, p->nr);
 	usleep(args->time_to_sleep);
 	if (args->philo_is_dead)
 		return (1);
 	gettimeofday(&(p->get_time), NULL);
-	printf("%d %i is thinking\n", p->get_time.tv_usec, p->nr);
+	printf("%ld %i is thinking\n", p->get_time.tv_usec, p->nr);
+	usleep(10);
 	return (0);
 }
 
@@ -71,13 +72,24 @@ void	*routine(void *philo)
 
 	p = (t_philo*) philo;
 	args = get_args();
-	gettimeofday(&(p->last_eat), NULL);
-	while (p->nr_eat < args->min_nr_eat) {
-		if (wait_for_fork(p))
-			return (NULL);
-		if (eat_sleep_think(p))
-			return (NULL);
-		p->nr_eat++;
+	if (args->min_nr_eat > 0)
+	{
+		while (p->nr_eat < args->min_nr_eat) {
+			if (wait_for_fork(p))
+				return (NULL);
+			if (eat_sleep_think(p))
+				return (NULL);
+			p->nr_eat++;
+		}
+	}
+	else {
+		while (!(args->philo_is_dead))
+		{
+			if (wait_for_fork(p))
+				return (NULL);
+			if (eat_sleep_think(p))
+				return (NULL);
+		}
 	}
 	return (NULL);
 }
