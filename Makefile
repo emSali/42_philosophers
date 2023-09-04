@@ -6,11 +6,11 @@
 #    By: esali <esali@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/18 13:16:13 by esali             #+#    #+#              #
-#    Updated: 2023/09/01 16:30:50 by esali            ###   ########.fr        #
+#    Updated: 2023/09/04 14:06:43 by esali            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME 		= philosophers
+NAME 		=	philo
 
 SRCS 		=	srcs/main.c srcs/init_args.c srcs/philosophers.c srcs/init_philos.c \
 				srcs/getters.c
