@@ -6,7 +6,7 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 18:52:03 by esali             #+#    #+#             */
-/*   Updated: 2023/09/01 17:03:02 by esali            ###   ########.fr       */
+/*   Updated: 2023/09/02 19:52:20 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 t_philo	*ft_lstnew(int number, t_philo *prv_philo)
 {
 	t_philo	*new_philo;
+	//struct timeval	last_eat;
+	//struct timeval	get_time;
 
 	new_philo = (t_philo *)malloc(sizeof(t_philo));
 	if (!new_philo)
@@ -23,6 +25,7 @@ t_philo	*ft_lstnew(int number, t_philo *prv_philo)
 	new_philo->nr = number;
 	new_philo->is_sleeping = 0;
 	new_philo->is_eating = 0;
+	//gettimeofday(&(new_philo->get_time), NULL);
 	new_philo->prv = prv_philo;
 	new_philo->nxt = NULL;
 	prv_philo->nxt = new_philo;
