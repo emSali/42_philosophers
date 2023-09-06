@@ -6,11 +6,21 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 15:07:44 by esali             #+#    #+#             */
-/*   Updated: 2023/09/04 17:07:57 by esali            ###   ########.fr       */
+/*   Updated: 2023/09/05 19:08:24 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../philosophers.h"
+#include "philosophers.h"
+
+long	get_ms(struct timeval time, t_args *args)
+{
+	long	start_time;
+	long	new_time;
+
+	start_time = args->start.tv_sec * 1000 + args->start.tv_usec / 1000;
+	new_time = time.tv_sec * 1000 + time.tv_usec / 1000 - start_time;
+	return (new_time);
+}
 
 int	wait_for_fork(t_philo *p, t_args *args)
 {
@@ -23,11 +33,11 @@ int	wait_for_fork(t_philo *p, t_args *args)
 	{
 		gettimeofday(&(p->get_time), NULL);
 		//printf("%i:	diff:%ld\n",p->nr, p->get_time.tv_usec - p->last_eat.tv_usec);
-		if ((p->get_time.tv_usec - p->last_eat.tv_usec) > args->time_to_die \
+		if ((get_ms(p->get_time, args) - get_ms(p->last_eat, args)) > args->time_to_die \
 		&& (args->min_nr_eat == 0 || p->nr_eat < args->min_nr_eat))
 		{
 			args->philo_is_dead = 1;
-			printf("%ld %i died\n", p->get_time.tv_usec, p->nr);
+			printf("%lu %i died\n", get_ms(p->get_time, args), p->nr);
 			return (1);
 		}
 		usleep(1);
@@ -46,19 +56,19 @@ int	eat_sleep_think(t_philo *p, t_args *args)
 		p->is_eating = 1;
 		pthread_mutex_unlock(&(p->m));
 		gettimeofday(&(p->last_eat), NULL);
-		printf("%ld %i is eating\n", p->last_eat.tv_usec, p->nr);
-		usleep(args->time_to_eat);
+		printf("%lu %i is eating\n",get_ms(p->last_eat, args), p->nr);
+		usleep(args->time_to_eat * 1000);
 		p->is_eating = 0;
 	}
 	if (args->philo_is_dead)
 		return (1);
 	gettimeofday(&(p->get_time), NULL);
-	printf("%ld %i is sleeping\n", p->get_time.tv_usec, p->nr);
-	usleep(args->time_to_sleep * 0.75);
+	printf("%lu %i is sleeping\n",get_ms(p->get_time, args), p->nr);
+	usleep(args->time_to_sleep * 1000);
 	if (args->philo_is_dead)
 		return (1);
 	gettimeofday(&(p->get_time), NULL);
-	printf("%ld %i is thinking\n", p->get_time.tv_usec, p->nr);
+	printf("%lu %i is thinking\n",get_ms(p->get_time, args), p->nr);
 	//usleep(5);
 	return (0);
 }
@@ -70,8 +80,7 @@ void	*routine(void *philo)
 
 	p = (t_philo*) philo;
 	args = get_args();
-	//gettimeofday(&(p->last_eat), NULL);
-	//eat(p, args);
+	gettimeofday(&(p->last_eat), NULL);
 	if (args->min_nr_eat > 0)
 	{
 		while (p->nr_eat < args->min_nr_eat) {
@@ -101,22 +110,12 @@ void	init_threads()
 
 	i = 0;
 	p = get_ps()->nxt;
+	gettimeofday(&(get_args()->start), NULL);
 	while (i < get_args()->nr_philo)
 	{
 		pthread_mutex_init(&(p->m), NULL);
-		i++;
-		p = p->nxt;
-	}
-	i = 0;
-	p = get_ps()->nxt;
-	while (i < get_args()->nr_philo)
-	{
-		gettimeofday(&(p->last_eat), NULL);
-		printf("%i: %ld\n", p->nr, p->last_eat.tv_usec);
 		if (pthread_create(&(p->t), NULL, &routine, (void *) p))
 			return ;
-		gettimeofday(&(p->last_eat), NULL);
-		printf("%i: %ld\n", p->nr, p->last_eat.tv_usec);
 		i++;
 		p = p->nxt;
 	}

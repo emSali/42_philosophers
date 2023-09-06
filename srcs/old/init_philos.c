@@ -6,11 +6,11 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 18:52:03 by esali             #+#    #+#             */
-/*   Updated: 2023/09/04 16:58:50 by esali            ###   ########.fr       */
+/*   Updated: 2023/09/05 19:03:11 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../philosophers.h"
+#include "philosophers.h"
 
 t_philo	*ft_lstnew(int number, t_philo *prv_philo)
 {
@@ -21,7 +21,6 @@ t_philo	*ft_lstnew(int number, t_philo *prv_philo)
 		return (NULL);
 	new_philo->nr_eat = 0;
 	new_philo->nr = number;
-	new_philo->is_sleeping = 0;
 	new_philo->is_eating = 0;
 	new_philo->prv = prv_philo;
 	new_philo->nxt = NULL;
