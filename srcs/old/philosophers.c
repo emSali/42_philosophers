@@ -6,7 +6,7 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 15:07:44 by esali             #+#    #+#             */
-/*   Updated: 2023/09/05 19:08:24 by esali            ###   ########.fr       */
+/*   Updated: 2023/09/06 18:24:38 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,11 @@ int	wait_for_fork(t_philo *p, t_args *args)
 	int		i;
 
 	i = 0;
-	if (args->philo_is_dead)
-		return (1);
 	while(p->prv->is_eating || p->nxt->is_eating || i == 0)
 	{
+		if (args->philo_is_dead)
+		return (1);
 		gettimeofday(&(p->get_time), NULL);
-		//printf("%i:	diff:%ld\n",p->nr, p->get_time.tv_usec - p->last_eat.tv_usec);
 		if ((get_ms(p->get_time, args) - get_ms(p->last_eat, args)) > args->time_to_die \
 		&& (args->min_nr_eat == 0 || p->nr_eat < args->min_nr_eat))
 		{
@@ -50,9 +49,11 @@ int	wait_for_fork(t_philo *p, t_args *args)
 
 int	eat_sleep_think(t_philo *p, t_args *args)
 {
+	if (args->philo_is_dead)
+		return (1);
+	pthread_mutex_lock(&(p->m));
 	if (!(p->prv->is_eating) && !(p->nxt->is_eating))
 	{
-		pthread_mutex_lock(&(p->m));
 		p->is_eating = 1;
 		pthread_mutex_unlock(&(p->m));
 		gettimeofday(&(p->last_eat), NULL);
@@ -69,9 +70,9 @@ int	eat_sleep_think(t_philo *p, t_args *args)
 		return (1);
 	gettimeofday(&(p->get_time), NULL);
 	printf("%lu %i is thinking\n",get_ms(p->get_time, args), p->nr);
-	//usleep(5);
 	return (0);
 }
+
 
 void	*routine(void *philo)
 {
@@ -102,6 +103,21 @@ void	*routine(void *philo)
 	}
 	return (NULL);
 }
+
+
+/*
+void	*routine(void *philo)
+{
+	t_philo			*p;
+	t_args			*args;
+
+	args = get_args();
+	p = (t_philo*) philo;
+	gettimeofday(&(p->last_eat), NULL);
+	printf("%i. created: %lu\n", p->nr, get_ms(p->last_eat, args));
+	return (NULL);
+}
+*/
 
 void	init_threads()
 {

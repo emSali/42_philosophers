@@ -6,7 +6,7 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/18 13:05:57 by esali             #+#    #+#             */
-/*   Updated: 2023/09/05 18:32:31 by esali            ###   ########.fr       */
+/*   Updated: 2023/09/06 19:09:43 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@
 typedef struct	s_philo
 {
 	int				nr;
-	int				is_eating;
 	int				nr_eat;
 	struct timeval	last_eat;
 	struct timeval	get_time;
@@ -35,17 +34,18 @@ typedef struct	s_philo
 typedef struct	s_fork
 {
 	pthread_mutex_t	m;
-	int				is_busy;
+	int			is_busy;
 }		t_fork;
 
 typedef struct s_args
 {
-	int		nr_philo;
-	int		time_to_die;
-	int		time_to_eat;
-	int		time_to_sleep;
-	int		min_nr_eat;
-	int		philo_is_dead;
+	int				nr_philo;
+	struct timeval	start;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
+	int				min_nr_eat;
+	int				philo_is_dead;
 }		t_args;
 
 t_args	*get_args();
