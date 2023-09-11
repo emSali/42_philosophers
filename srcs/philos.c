@@ -6,7 +6,7 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 17:06:48 by esali             #+#    #+#             */
-/*   Updated: 2023/09/11 18:39:49 by esali            ###   ########.fr       */
+/*   Updated: 2023/09/11 18:50:01 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,12 @@ void	*routine(void	*philo)
 
 	p = (t_philo*) philo;
 	p->args->all_ready--;
-	//while(p->args->all_ready)
-	//{
-	//	usleep(10);
-	//}
+	while(p->args->all_ready != 0)
+	{
+		usleep(10);
+	}
+	if (p->nr % 2)
+		usleep (100);
 	gettimeofday(&(p->last_eat), NULL);
 	while (!(p->args->philo_is_dead))
 	{
