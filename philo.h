@@ -6,7 +6,7 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/18 13:05:57 by esali             #+#    #+#             */
-/*   Updated: 2023/09/12 14:08:55 by esali            ###   ########.fr       */
+/*   Updated: 2023/09/12 15:19:53 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <pthread.h>
 # include <sys/time.h>
 
-typedef struct	s_philo
+typedef struct s_philo
 {
 	int				nr;
 	int				nr_eat;
@@ -31,10 +31,10 @@ typedef struct	s_philo
 	pthread_t		t;
 }		t_philo;
 
-typedef struct	s_fork
+typedef struct s_fork
 {
 	pthread_mutex_t	m;
-	int			is_busy;
+	int				is_busy;
 }		t_fork;
 
 typedef struct s_args
@@ -50,7 +50,7 @@ typedef struct s_args
 	int				all_ready;
 }		t_args;
 
-t_args	*get_args();
+t_args	*get_args(void);
 int		init_args(char **argv);
 t_philo	**init_philos(t_args *args);
 void	free_philos(t_philo **ps);

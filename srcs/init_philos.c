@@ -6,7 +6,7 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 17:44:39 by esali             #+#    #+#             */
-/*   Updated: 2023/09/12 15:08:42 by esali            ###   ########.fr       */
+/*   Updated: 2023/09/12 15:13:02 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_philo	*new_philo(int number, t_args *args, t_fork *left, t_fork *right)
 	return (new_philo);
 }
 
-t_fork	*new_fork()
+t_fork	*new_fork(void)
 {
 	t_fork	*new_fork;
 

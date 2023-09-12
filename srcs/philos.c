@@ -6,7 +6,7 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 17:06:48 by esali             #+#    #+#             */
-/*   Updated: 2023/09/12 15:06:20 by esali            ###   ########.fr       */
+/*   Updated: 2023/09/12 16:43:58 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,17 +24,22 @@ long	get_ms(struct timeval time, t_args *args)
 
 int	p_wait(t_philo *p, t_fork *fork)
 {
-	while(fork->is_busy)
+	int	i;
+
+	i = 0;
+	while (fork->is_busy || !i)
 	{
 		if (p->args->philo_is_dead)
 			return (0);
 		gettimeofday(&(p->get_time), NULL);
-		if (get_ms(p->get_time, p->args) - get_ms(p->last_eat, p->args) > p->args->time_to_die)
+		if (get_ms(p->get_time, p->args) - get_ms(p->last_eat, p->args) > \
+		p->args->time_to_die)
 		{
 			printf("%lu %i died\n", get_ms(p->get_time, p->args), p->nr);
 			p->args->philo_is_dead = 1;
 			return (1);
 		}
+		i++;
 	}
 	return (0);
 }
@@ -54,7 +59,7 @@ int	p_eat(t_philo *p)
 	gettimeofday(&(p->get_time), NULL);
 	if (p->args->philo_is_dead)
 		return (1);
-	printf("%lu %i has taken a fork\n",get_ms(p->get_time, p->args), p->nr);
+	printf("%lu %i has taken a fork\n", get_ms(p->get_time, p->args), p->nr);
 	gettimeofday(&(p->last_eat), NULL);
 	if (p->args->philo_is_dead)
 		return (1);
@@ -68,11 +73,55 @@ int	p_eat(t_philo *p)
 	return (0);
 }
 
+int	p_sleep(t_philo *p)
+{
+	int	loop_len;
+	int	i;
+
+	i = 0;
+	loop_len = p->args->time_to_sleep / 9;
+	if (p->args->philo_is_dead)
+		return (1);
+	gettimeofday(&(p->get_time), NULL);
+	printf("%lu %i is sleeping\n", get_ms(p->get_time, p->args), p->nr);
+	if (p->args->time_to_sleep <= 10)
+	{
+		usleep(p->args->time_to_sleep * 1000);
+		return (0);
+	}
+	while(i < loop_len)
+	{
+		if (p->args->philo_is_dead)
+		return (1);
+		gettimeofday(&(p->get_time), NULL);
+		if (get_ms(p->get_time, p->args) - get_ms(p->last_eat, p->args) > \
+		p->args->time_to_die)
+		{
+			printf("%lu %i died\n", get_ms(p->get_time, p->args), p->nr);
+			p->args->philo_is_dead = 1;
+			return (1);
+		}
+		usleep(9000);
+		i++;
+	}
+	usleep((p->args->time_to_sleep % 9) * 1000);
+	return (0);
+}
+
 void	*routine(void	*philo)
 {
 	t_philo			*p;
 
-	p = (t_philo*) philo;
+	p = (t_philo *) philo;
+	p->args->all_ready--;
+	while(p->args->all_ready != 0)
+		usleep(5);
+	if (p->nr < (p->args->nr_philo / 2))
+		usleep(p->nr * 200);
+	else
+		usleep((50 - p->nr) * 200);
+	//if (!(p->nr % 2))
+	//	usleep(6000);
 	gettimeofday(&(p->last_eat), NULL);
 	while (!(p->args->philo_is_dead))
 	{
@@ -82,11 +131,7 @@ void	*routine(void	*philo)
 			return (NULL);
 		if (p_eat(p))
 			return (NULL);
-		gettimeofday(&(p->get_time), NULL);
-		if (p->args->philo_is_dead)
-			return (NULL);
-		printf("%lu %i is sleeping\n", get_ms(p->get_time, p->args), p->nr);
-		usleep(p->args->time_to_sleep * 1000);
+		p_sleep(p);
 		gettimeofday(&(p->get_time), NULL);
 		if (p->args->philo_is_dead)
 			return (NULL);
@@ -95,6 +140,7 @@ void	*routine(void	*philo)
 	return (NULL);
 }
 
+//usleep(100);
 void	start_philos(t_philo **ps, t_args *args)
 {
 	int		i;
@@ -105,7 +151,6 @@ void	start_philos(t_philo **ps, t_args *args)
 	{
 		if (pthread_create(&(ps[i]->t), NULL, &routine, (void *) ps[i]))
 			return ;
-		//usleep(100);
 		i++;
 	}
 	i = 0;

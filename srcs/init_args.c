@@ -6,7 +6,7 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 15:05:11 by esali             #+#    #+#             */
-/*   Updated: 2023/09/12 15:08:22 by esali            ###   ########.fr       */
+/*   Updated: 2023/09/12 15:12:46 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,24 +41,26 @@ int	init_args(char **argv)
 	args->all_ready = args->nr_philo;
 	pthread_mutex_init(&(args->m), NULL);
 	args->philo_is_dead = 0;
-	if (argv[5]) {
+	if (argv[5])
+	{
 		args->min_nr_eat = get_nr(argv[5]);
 		if (args->min_nr_eat < 1)
 			return (1);
 	}
 	else
 		args->min_nr_eat = 0;
-	if (args->nr_philo < 1 || args->time_to_die < 1 || args->time_to_eat < 0 || args->time_to_sleep < 0)
+	if (args->nr_philo < 1 || args->time_to_die < 1 || \
+	args->time_to_eat < 0 || args->time_to_sleep < 0)
 	{
-			printf("\nthe arguments are not correct");
-			return (1);
+		printf("\nthe arguments are not correct");
+		return (1);
 	}
 	return (0);
 }
 
 /* Static variables have the property of preserving
 their value even after they are out of their scope*/
-t_args	*get_args()
+t_args	*get_args(void)
 {
 	static t_args	args;
 
