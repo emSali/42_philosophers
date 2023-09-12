@@ -6,7 +6,7 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 17:06:48 by esali             #+#    #+#             */
-/*   Updated: 2023/09/11 18:50:01 by esali            ###   ########.fr       */
+/*   Updated: 2023/09/12 15:06:20 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,11 @@ int	p_wait(t_philo *p, t_fork *fork)
 {
 	while(fork->is_busy)
 	{
+		if (p->args->philo_is_dead)
+			return (0);
 		gettimeofday(&(p->get_time), NULL);
 		if (get_ms(p->get_time, p->args) - get_ms(p->last_eat, p->args) > p->args->time_to_die)
 		{
-			gettimeofday(&(p->get_time), NULL);
 			printf("%lu %i died\n", get_ms(p->get_time, p->args), p->nr);
 			p->args->philo_is_dead = 1;
 			return (1);
@@ -38,49 +39,49 @@ int	p_wait(t_philo *p, t_fork *fork)
 	return (0);
 }
 
+int	p_eat(t_philo *p)
+{
+	pthread_mutex_lock(&(p->left->m));
+	p->left->is_busy++;
+	gettimeofday(&(p->get_time), NULL);
+	if (p->args->philo_is_dead)
+		return (1);
+	printf("%lu %i has taken a fork\n", get_ms(p->get_time, p->args), p->nr);
+	if (p_wait(p, p->right))
+		return (1);
+	pthread_mutex_lock(&(p->right->m));
+	p->right->is_busy++;
+	gettimeofday(&(p->get_time), NULL);
+	if (p->args->philo_is_dead)
+		return (1);
+	printf("%lu %i has taken a fork\n",get_ms(p->get_time, p->args), p->nr);
+	gettimeofday(&(p->last_eat), NULL);
+	if (p->args->philo_is_dead)
+		return (1);
+	printf("%lu %i is eating\n", get_ms(p->last_eat, p->args), p->nr);
+	usleep(p->args->time_to_eat * 1000);
+	pthread_mutex_unlock(&(p->right->m));
+	pthread_mutex_unlock(&(p->left->m));
+	p->left->is_busy = 0;
+	p->right->is_busy = 0;
+	p->nr_eat++;
+	return (0);
+}
+
 void	*routine(void	*philo)
 {
 	t_philo			*p;
 
 	p = (t_philo*) philo;
-	p->args->all_ready--;
-	while(p->args->all_ready != 0)
-	{
-		usleep(10);
-	}
-	if (p->nr % 2)
-		usleep (100);
 	gettimeofday(&(p->last_eat), NULL);
 	while (!(p->args->philo_is_dead))
 	{
 		if (p->args->min_nr_eat && p->nr_eat >= p->args->min_nr_eat)
 			return (NULL);
 		if (p_wait(p, p->left))
-			return (0);
-		pthread_mutex_lock(&(p->left->m));
-		p->left->is_busy++;
-		gettimeofday(&(p->get_time), NULL);
-		if (p->args->philo_is_dead)
 			return (NULL);
-		printf("%lu %i has taken a fork\n", get_ms(p->get_time, p->args), p->nr);
-		if (p_wait(p, p->right))
-			return (0);
-		pthread_mutex_lock(&(p->right->m));
-		p->right->is_busy++;
-		gettimeofday(&(p->get_time), NULL);
-		if (p->args->philo_is_dead)
+		if (p_eat(p))
 			return (NULL);
-		printf("%lu %i has taken a fork\n",get_ms(p->get_time, p->args), p->nr);
-		gettimeofday(&(p->last_eat), NULL);
-		if (p->args->philo_is_dead)
-			return (NULL);
-		printf("%lu %i is eating\n", get_ms(p->last_eat, p->args), p->nr);
-		usleep(p->args->time_to_eat * 1000);
-		pthread_mutex_unlock(&(p->right->m));
-		pthread_mutex_unlock(&(p->left->m));
-		p->left->is_busy = 0;
-		p->right->is_busy = 0;
-		p->nr_eat++;
 		gettimeofday(&(p->get_time), NULL);
 		if (p->args->philo_is_dead)
 			return (NULL);
@@ -110,7 +111,7 @@ void	start_philos(t_philo **ps, t_args *args)
 	i = 0;
 	while (i < get_args()->nr_philo)
 	{
-		if (pthread_join(ps[i]->t, NULL)) //save return value in second argument
+		if (pthread_join(ps[i]->t, NULL))
 			return ;
 		i++;
 	}

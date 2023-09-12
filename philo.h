@@ -6,7 +6,7 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/18 13:05:57 by esali             #+#    #+#             */
-/*   Updated: 2023/09/11 18:30:57 by esali            ###   ########.fr       */
+/*   Updated: 2023/09/12 14:08:55 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ typedef struct s_args
 	int				time_to_sleep;
 	int				min_nr_eat;
 	int				philo_is_dead;
+	pthread_mutex_t	m;
 	int				all_ready;
 }		t_args;
 
