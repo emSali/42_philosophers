@@ -6,7 +6,7 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 17:06:48 by esali             #+#    #+#             */
-/*   Updated: 2023/09/12 16:43:58 by esali            ###   ########.fr       */
+/*   Updated: 2023/09/15 16:58:53 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ int	p_sleep(t_philo *p)
 	printf("%lu %i is sleeping\n", get_ms(p->get_time, p->args), p->nr);
 	if (p->args->time_to_sleep <= 10)
 	{
+		printf("inside if \n");
 		usleep(p->args->time_to_sleep * 1000);
 		return (0);
 	}
@@ -94,7 +95,7 @@ int	p_sleep(t_philo *p)
 		if (p->args->philo_is_dead)
 		return (1);
 		gettimeofday(&(p->get_time), NULL);
-		if (get_ms(p->get_time, p->args) - get_ms(p->last_eat, p->args) > \
+		if (get_ms(p->get_time, p->args) - get_ms(p->last_eat, p->args) >= \
 		p->args->time_to_die)
 		{
 			printf("%lu %i died\n", get_ms(p->get_time, p->args), p->nr);
