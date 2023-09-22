@@ -6,7 +6,7 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 17:44:39 by esali             #+#    #+#             */
-/*   Updated: 2023/09/12 15:13:02 by esali            ###   ########.fr       */
+/*   Updated: 2023/09/22 17:35:16 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,8 @@ void	free_philos(t_philo **ps)
 
 	i = 0;
 	args = get_args();
-	pthread_mutex_destroy(&(args->m));
+	pthread_mutex_destroy(&(args->m_ready));
+	pthread_mutex_destroy(&(args->m_dead));
 	while (i < args->nr_philo)
 	{
 		pthread_mutex_destroy(&(ps[i]->left->m));
