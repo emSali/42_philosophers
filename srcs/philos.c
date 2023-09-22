@@ -6,7 +6,7 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 17:06:48 by esali             #+#    #+#             */
-/*   Updated: 2023/09/22 18:49:50 by esali            ###   ########.fr       */
+/*   Updated: 2023/09/22 19:28:55 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,10 @@ int	check_is_dead(t_philo *p, t_args *args)
 {
 	pthread_mutex_lock(&(args->m_dead));
 	if (p->args->philo_is_dead)
+	{
+		pthread_mutex_unlock(&(args->m_dead));
 		return (1);
+	}
 	gettimeofday(&(p->get_time), NULL);
 	if (get_ms(p->get_time, p->args) - get_ms(p->last_eat, p->args) > \
 	p->args->time_to_die)
@@ -40,22 +43,39 @@ int	check_is_dead(t_philo *p, t_args *args)
 	return (0);
 }
 
-int	p_wait(t_philo *p, t_fork *fork)
+int	p_wait(t_philo *p)
 {
 	while(1)
 	{
 		usleep(1000);
 		if (check_is_dead(p, p->args))
 			return (1);
-		gettimeofday(&(p->get_time), NULL);
-		pthread_mutex_lock(&(fork->m));
-		if (!fork->is_busy)
+		if (p->nr % 2 == 0)
 		{
-			gettimeofday(&(p->get_time), NULL);
-			pthread_mutex_unlock(&(fork->m));
-			return (0);
+			pthread_mutex_lock(&(p->left->m));
+			pthread_mutex_lock(&(p->right->m));
+			if (!p->left->is_busy && !p->right->is_busy)
+			{
+				pthread_mutex_unlock(&(p->right->m));
+				pthread_mutex_unlock(&(p->left->m));
+				return (0);
+			}
+			pthread_mutex_unlock(&(p->right->m));
+			pthread_mutex_unlock(&(p->left->m));
 		}
-		pthread_mutex_unlock(&(fork->m));
+		else
+		{
+			pthread_mutex_lock(&(p->right->m));
+			pthread_mutex_lock(&(p->left->m));
+			if (!p->left->is_busy && !p->right->is_busy)
+			{
+				pthread_mutex_unlock(&(p->left->m));
+				pthread_mutex_unlock(&(p->right->m));
+				return (0);
+			}
+			pthread_mutex_unlock(&(p->left->m));
+			pthread_mutex_unlock(&(p->right->m));
+		}
 	}
 	return (0);
 }
@@ -78,7 +98,6 @@ int	p_eat(t_philo *p)
 	else
 	{
 		pthread_mutex_lock(&(p->right->m));
-		p->right->is_busy++;
 		gettimeofday(&(p->get_time), NULL);
 		printf("%lu %i has taken a fork\n", get_ms(p->get_time, p->args), p->nr);
 		pthread_mutex_lock(&(p->left->m));
@@ -88,6 +107,8 @@ int	p_eat(t_philo *p)
 		pthread_mutex_unlock(&(p->left->m));
 		pthread_mutex_unlock(&(p->right->m));
 	}
+	if (check_is_dead(p, p->args))
+		return (1);
 	gettimeofday(&(p->last_eat), NULL);
 	printf("%lu %i is eating\n", get_ms(p->last_eat, p->args), p->nr);
 	usleep(p->args->time_to_eat * 1000);
@@ -152,16 +173,8 @@ void	*routine(void	*philo)
 	{
 		if (p->args->min_nr_eat && p->nr_eat >= p->args->min_nr_eat)
 			return (NULL);
-		if (p->nr % 2 == 0)
-		{
-			if (p_wait(p, p->left))
-				return (NULL);
-		}
-		else
-		{
-			if (p_wait(p, p->right))
-				return (NULL);
-		}
+		if (p_wait(p))
+			return (NULL);
 		if (p_eat(p))
 			return (NULL);
 		if (p_sleep(p))
