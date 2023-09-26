@@ -6,7 +6,7 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 15:05:11 by esali             #+#    #+#             */
-/*   Updated: 2023/09/22 17:42:39 by esali            ###   ########.fr       */
+/*   Updated: 2023/09/26 17:09:11 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,6 @@ int	init_args(char **argv)
 	args->time_to_die = get_nr(argv[2]);
 	args->time_to_eat = get_nr(argv[3]);
 	args->time_to_sleep = get_nr(argv[4]);
-	args->all_ready = args->nr_philo;
-	pthread_mutex_init(&(args->m_ready), NULL);
 	pthread_mutex_init(&(args->m_dead), NULL);
 	args->philo_is_dead = 0;
 	if (argv[5])

@@ -6,7 +6,7 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 17:06:48 by esali             #+#    #+#             */
-/*   Updated: 2023/09/22 19:28:55 by esali            ###   ########.fr       */
+/*   Updated: 2023/09/26 17:27:38 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,37 +43,41 @@ int	check_is_dead(t_philo *p, t_args *args)
 	return (0);
 }
 
-int	p_wait(t_philo *p)
+int	p_wait(t_philo *p, int nr)
 {
 	while(1)
 	{
-		usleep(1000);
+		gettimeofday(&(p->get_time), NULL);
 		if (check_is_dead(p, p->args))
 			return (1);
-		if (p->nr % 2 == 0)
+		if (nr % 2 == 0)
 		{
+			if(p->args->nr_philo == 1)
+				continue ;
+			usleep(1000);
 			pthread_mutex_lock(&(p->left->m));
-			pthread_mutex_lock(&(p->right->m));
-			if (!p->left->is_busy && !p->right->is_busy)
+			//pthread_mutex_lock(&(p->right->m));
+			if (!p->left->is_busy) //&& !p->right->is_busy)
 			{
-				pthread_mutex_unlock(&(p->right->m));
+				//pthread_mutex_unlock(&(p->right->m));
 				pthread_mutex_unlock(&(p->left->m));
 				return (0);
 			}
-			pthread_mutex_unlock(&(p->right->m));
+			//pthread_mutex_unlock(&(p->right->m));
 			pthread_mutex_unlock(&(p->left->m));
 		}
 		else
 		{
+			usleep(1000);
 			pthread_mutex_lock(&(p->right->m));
-			pthread_mutex_lock(&(p->left->m));
-			if (!p->left->is_busy && !p->right->is_busy)
+			//pthread_mutex_lock(&(p->left->m));
+			if (!p->right->is_busy) // && !p->left->is_busy)
 			{
-				pthread_mutex_unlock(&(p->left->m));
+				//pthread_mutex_unlock(&(p->left->m));
 				pthread_mutex_unlock(&(p->right->m));
 				return (0);
 			}
-			pthread_mutex_unlock(&(p->left->m));
+			//pthread_mutex_unlock(&(p->left->m));
 			pthread_mutex_unlock(&(p->right->m));
 		}
 	}
@@ -88,6 +92,11 @@ int	p_eat(t_philo *p)
 		p->left->is_busy++;
 		gettimeofday(&(p->get_time), NULL);
 		printf("%lu %i has taken a fork\n", get_ms(p->get_time, p->args), p->nr);
+		if (p_wait(p, p->nr + 1))
+		{
+			pthread_mutex_unlock(&(p->left->m));
+			return (1);
+		}
 		pthread_mutex_lock(&(p->right->m));
 		p->right->is_busy++;
 		gettimeofday(&(p->get_time), NULL);
@@ -98,8 +107,14 @@ int	p_eat(t_philo *p)
 	else
 	{
 		pthread_mutex_lock(&(p->right->m));
+		p->right->is_busy++;
 		gettimeofday(&(p->get_time), NULL);
 		printf("%lu %i has taken a fork\n", get_ms(p->get_time, p->args), p->nr);
+		if (p_wait(p, p->nr + 1))
+		{
+			pthread_mutex_unlock(&(p->left->m));
+			return (1);
+		}
 		pthread_mutex_lock(&(p->left->m));
 		p->left->is_busy++;
 		gettimeofday(&(p->get_time), NULL);
@@ -173,14 +188,14 @@ void	*routine(void	*philo)
 	{
 		if (p->args->min_nr_eat && p->nr_eat >= p->args->min_nr_eat)
 			return (NULL);
-		if (p_wait(p))
+		if (p_wait(p, p->nr))
 			return (NULL);
 		if (p_eat(p))
 			return (NULL);
 		if (p_sleep(p))
 			return (NULL);
 		gettimeofday(&(p->get_time), NULL);
-		if (p->args->philo_is_dead)
+		if (check_is_dead(p, p->args))
 			return (NULL);
 		printf("%lu %i is thinking\n", get_ms(p->get_time, p->args), p->nr);
 	}
