@@ -6,7 +6,7 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 17:06:48 by esali             #+#    #+#             */
-/*   Updated: 2023/10/02 15:44:50 by esali            ###   ########.fr       */
+/*   Updated: 2023/10/02 16:31:20 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,12 +157,10 @@ int	p_eat(t_philo *p)
 
 int	p_sleep(t_philo *p)
 {
-	//int	loop_len;
-	//int	i;
+	int	loop_len;
+	int	i;
 	//int	time;
 
-	//i = 1;
-	//time = p->args->time_to_sleep / 9;
 	if (check_is_dead(p, p->args))
 		return (1);
 	gettimeofday(&(p->get_time), NULL);
@@ -172,13 +170,20 @@ int	p_sleep(t_philo *p)
 	// 	usleep(p->args->time_to_sleep * 1000);
 	// 	return (0);
 	// }
-	//while(i < 9)
-	//{
-		//if (check_is_dead(p, p->args))
-		//	return (1);
-		usleep(p->args->time_to_sleep * 1000);
-	//	i++;
-	//}
+	loop_len = p->args->time_to_sleep / 9;
+	i = 1;
+	while(i < loop_len)
+	{
+		gettimeofday(&(p->get_time), NULL);
+		if (get_ms(p->get_time, p->args) - get_ms(p->last_eat, p->args) > \
+		p->args->time_to_die)
+		{
+			check_is_dead(p, p->args);
+			return (1);
+		}
+		usleep(8000);
+		i++;
+	}
 	//usleep((p->args->time_to_sleep % 9) * 1000);
 	return (0);
 }
