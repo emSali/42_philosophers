@@ -160,19 +160,19 @@ int	p_sleep(t_philo *p)
 		return (1);
 	gettimeofday(&(p->get_time), NULL);
 	printf("%lu %i is sleeping\n", get_ms(p->get_time, p->args), p->nr);
-	if (p->args->time_to_sleep <= 10)
-	{
-		usleep(p->args->time_to_sleep * 1000);
-		return (0);
-	}
+	// if (p->args->time_to_sleep <= 10)
+	// {
+	// 	usleep(p->args->time_to_sleep * 1000);
+	// 	return (0);
+	// }
 	while(i < loop_len)
 	{
 		if (check_is_dead(p, p->args))
 			return (1);
-		usleep(9000);
+		usleep(8000);
 		i++;
 	}
-	usleep((p->args->time_to_sleep % 9) * 1000);
+	//usleep((p->args->time_to_sleep % 9) * 1000);
 	return (0);
 }
 
