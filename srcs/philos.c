@@ -6,7 +6,7 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 17:06:48 by esali             #+#    #+#             */
-/*   Updated: 2023/09/26 17:27:38 by esali            ###   ########.fr       */
+/*   Updated: 2023/10/02 15:44:50 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int	p_wait(t_philo *p, int nr)
 		{
 			if(p->args->nr_philo == 1)
 				continue ;
-			usleep(1000);
+			usleep(100);
 			pthread_mutex_lock(&(p->left->m));
 			//pthread_mutex_lock(&(p->right->m));
 			if (!p->left->is_busy) //&& !p->right->is_busy)
@@ -68,7 +68,7 @@ int	p_wait(t_philo *p, int nr)
 		}
 		else
 		{
-			usleep(1000);
+			usleep(100);
 			pthread_mutex_lock(&(p->right->m));
 			//pthread_mutex_lock(&(p->left->m));
 			if (!p->right->is_busy) // && !p->left->is_busy)
@@ -86,41 +86,47 @@ int	p_wait(t_philo *p, int nr)
 
 int	p_eat(t_philo *p)
 {
+	//if (check_is_dead(p, p->args))
+	//	return (1);
 	if (p->nr % 2 == 0)
 	{
 		pthread_mutex_lock(&(p->left->m));
-		p->left->is_busy++;
+		p->left->is_busy = 1;
+		pthread_mutex_unlock(&(p->left->m));
+		if (check_is_dead(p, p->args))
+		return (1);
 		gettimeofday(&(p->get_time), NULL);
 		printf("%lu %i has taken a fork\n", get_ms(p->get_time, p->args), p->nr);
 		if (p_wait(p, p->nr + 1))
 		{
-			pthread_mutex_unlock(&(p->left->m));
+			//pthread_mutex_unlock(&(p->left->m));
 			return (1);
 		}
 		pthread_mutex_lock(&(p->right->m));
 		p->right->is_busy++;
+		pthread_mutex_unlock(&(p->right->m));
 		gettimeofday(&(p->get_time), NULL);
 		printf("%lu %i has taken a fork\n", get_ms(p->get_time, p->args), p->nr);
-		pthread_mutex_unlock(&(p->right->m));
-		pthread_mutex_unlock(&(p->left->m));
 	}
 	else
 	{
 		pthread_mutex_lock(&(p->right->m));
-		p->right->is_busy++;
+		p->right->is_busy = 1;
+		pthread_mutex_unlock(&(p->right->m));
+		if (check_is_dead(p, p->args))
+		return (1);
 		gettimeofday(&(p->get_time), NULL);
 		printf("%lu %i has taken a fork\n", get_ms(p->get_time, p->args), p->nr);
 		if (p_wait(p, p->nr + 1))
 		{
-			pthread_mutex_unlock(&(p->left->m));
+			//pthread_mutex_unlock(&(p->left->m));
 			return (1);
 		}
 		pthread_mutex_lock(&(p->left->m));
 		p->left->is_busy++;
+		pthread_mutex_unlock(&(p->left->m));
 		gettimeofday(&(p->get_time), NULL);
 		printf("%lu %i has taken a fork\n", get_ms(p->get_time, p->args), p->nr);
-		pthread_mutex_unlock(&(p->left->m));
-		pthread_mutex_unlock(&(p->right->m));
 	}
 	if (check_is_dead(p, p->args))
 		return (1);
@@ -131,19 +137,19 @@ int	p_eat(t_philo *p)
 	{
 		pthread_mutex_lock(&(p->left->m));
 		p->left->is_busy = 0;
+		pthread_mutex_unlock(&(p->left->m));
 		pthread_mutex_lock(&(p->right->m));
 		p->right->is_busy = 0;
 		pthread_mutex_unlock(&(p->right->m));
-		pthread_mutex_unlock(&(p->left->m));
 	}
 	else
 	{
 		pthread_mutex_lock(&(p->right->m));
 		p->right->is_busy = 0;
+		pthread_mutex_unlock(&(p->right->m));
 		pthread_mutex_lock(&(p->left->m));
 		p->left->is_busy = 0;
 		pthread_mutex_unlock(&(p->left->m));
-		pthread_mutex_unlock(&(p->right->m));
 	}
 	p->nr_eat++;
 	return (0);
@@ -151,11 +157,12 @@ int	p_eat(t_philo *p)
 
 int	p_sleep(t_philo *p)
 {
-	int	loop_len;
-	int	i;
+	//int	loop_len;
+	//int	i;
+	//int	time;
 
-	i = 0;
-	loop_len = p->args->time_to_sleep / 9;
+	//i = 1;
+	//time = p->args->time_to_sleep / 9;
 	if (check_is_dead(p, p->args))
 		return (1);
 	gettimeofday(&(p->get_time), NULL);
@@ -165,13 +172,13 @@ int	p_sleep(t_philo *p)
 	// 	usleep(p->args->time_to_sleep * 1000);
 	// 	return (0);
 	// }
-	while(i < loop_len)
-	{
-		if (check_is_dead(p, p->args))
-			return (1);
-		usleep(8000);
-		i++;
-	}
+	//while(i < 9)
+	//{
+		//if (check_is_dead(p, p->args))
+		//	return (1);
+		usleep(p->args->time_to_sleep * 1000);
+	//	i++;
+	//}
 	//usleep((p->args->time_to_sleep % 9) * 1000);
 	return (0);
 }
