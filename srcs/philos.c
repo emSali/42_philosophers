@@ -6,7 +6,7 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 17:06:48 by esali             #+#    #+#             */
-/*   Updated: 2023/10/02 16:31:20 by esali            ###   ########.fr       */
+/*   Updated: 2023/10/03 16:27:52 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,11 @@ long	get_ms(struct timeval time, t_args *args)
 
 int	check_is_dead(t_philo *p, t_args *args)
 {
-	pthread_mutex_lock(&(args->m_dead));
+	(void) args;
+	//pthread_mutex_lock(&(args->m_dead));
 	if (p->args->philo_is_dead)
 	{
-		pthread_mutex_unlock(&(args->m_dead));
+		//pthread_mutex_unlock(&(args->m_dead));
 		return (1);
 	}
 	gettimeofday(&(p->get_time), NULL);
@@ -36,10 +37,10 @@ int	check_is_dead(t_philo *p, t_args *args)
 	{
 		printf("%lu %i died\n", get_ms(p->get_time, p->args), p->nr);
 		p->args->philo_is_dead = 1;
-		pthread_mutex_unlock(&(args->m_dead));
+		//pthread_mutex_unlock(&(args->m_dead));
 		return (1);
 	}
-	pthread_mutex_unlock(&(args->m_dead));
+	//pthread_mutex_unlock(&(args->m_dead));
 	return (0);
 }
 
@@ -151,6 +152,8 @@ int	p_eat(t_philo *p)
 		p->left->is_busy = 0;
 		pthread_mutex_unlock(&(p->left->m));
 	}
+	gettimeofday(&(p->get_time), NULL);
+	printf("%lu %i is eating\n", get_ms(p->last_eat, p->args), p->nr);
 	p->nr_eat++;
 	return (0);
 }
@@ -181,7 +184,7 @@ int	p_sleep(t_philo *p)
 			check_is_dead(p, p->args);
 			return (1);
 		}
-		usleep(8000);
+		usleep(9000);
 		i++;
 	}
 	//usleep((p->args->time_to_sleep % 9) * 1000);
@@ -194,7 +197,7 @@ void	*routine(void	*philo)
 
 	p = (t_philo *) philo;
 	gettimeofday(&(p->last_eat), NULL);
-	if (p->nr % 2)
+	if (p->nr % 2 == 0)
 		usleep(1000 * 50);
 	while (!check_is_dead(p, p->args))
 	{
