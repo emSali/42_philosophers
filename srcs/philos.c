@@ -6,7 +6,7 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 17:06:48 by esali             #+#    #+#             */
-/*   Updated: 2023/10/09 17:51:07 by esali            ###   ########.fr       */
+/*   Updated: 2023/10/13 17:15:41 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,9 @@ int	p_wait(t_philo *p, int nr)
 		gettimeofday(&(p->get_time), NULL);
 		if (check_is_dead(p, p->args))
 			return (1);
-		if (nr % 2 == 1)
+		if (nr % 2 == 0)
 		{
-			if(p->args->nr_philo == 1)
+			if(p->args->nr_philo == 0)
 				continue ;
 			pthread_mutex_lock(&(p->left->m));
 			if (!p->left->is_busy)
@@ -82,63 +82,63 @@ int	p_wait(t_philo *p, int nr)
 
 int	p_eat(t_philo *p)
 {
-	if (p->nr % 2 == 1)
-	{
+	// if (p->nr % 2 == 0)
+	// {
 		pthread_mutex_lock(&(p->left->m));
 		p->left->is_busy = 1;
 		pthread_mutex_unlock(&(p->left->m));
 		if (check_is_dead(p, p->args))
 			return (1);
 		gettimeofday(&(p->get_time), NULL);
-		printf("%lu %i has taken a fork\n", get_ms(p->get_time, p->args), p->nr);
-		if (p_wait(p, p->nr + 1))
+		printf("%lu %i has taken left fork\n", get_ms(p->get_time, p->args), p->nr);
+		if (p_wait(p, 1))
 			return (1);
 		pthread_mutex_lock(&(p->right->m));
 		p->right->is_busy++;
 		pthread_mutex_unlock(&(p->right->m));
 		gettimeofday(&(p->get_time), NULL);
-		printf("%lu %i has taken a fork\n", get_ms(p->get_time, p->args), p->nr);
-	}
-	else
-	{
-		pthread_mutex_lock(&(p->right->m));
-		p->right->is_busy = 1;
-		pthread_mutex_unlock(&(p->right->m));
-		if (check_is_dead(p, p->args))
-			return (1);
-		gettimeofday(&(p->get_time), NULL);
-		printf("%lu %i has taken a fork\n", get_ms(p->get_time, p->args), p->nr);
-		if (p_wait(p, p->nr + 1))
-			return (1);
-		pthread_mutex_lock(&(p->left->m));
-		p->left->is_busy++;
-		pthread_mutex_unlock(&(p->left->m));
-		gettimeofday(&(p->get_time), NULL);
-		printf("%lu %i has taken a fork\n", get_ms(p->get_time, p->args), p->nr);
-	}
+		printf("%lu %i has taken right fork\n", get_ms(p->get_time, p->args), p->nr);
+	// }
+	// else
+	// {
+	// 	pthread_mutex_lock(&(p->right->m));
+	// 	p->right->is_busy = 1;
+	// 	pthread_mutex_unlock(&(p->right->m));
+	// 	if (check_is_dead(p, p->args))
+	// 		return (1);
+	// 	gettimeofday(&(p->get_time), NULL);
+	// 	printf("%lu %i has taken a fork\n", get_ms(p->get_time, p->args), p->nr);
+	// 	if (p_wait(p, p->nr + 1))
+	// 		return (1);
+	// 	pthread_mutex_lock(&(p->left->m));
+	// 	p->left->is_busy++;
+	// 	pthread_mutex_unlock(&(p->left->m));
+	// 	gettimeofday(&(p->get_time), NULL);
+	// 	printf("%lu %i has taken a fork\n", get_ms(p->get_time, p->args), p->nr);
+	// }
 	if (check_is_dead(p, p->args))
 		return (1);
 	gettimeofday(&(p->last_eat), NULL);
 	printf("%lu %i is eating\n", get_ms(p->last_eat, p->args), p->nr);
 	usleep(p->args->time_to_eat * 1000);
-	if (p->nr % 2 == 0)
-	{
+	// if (p->nr % 2 == 0)
+	// {
 		pthread_mutex_lock(&(p->left->m));
 		p->left->is_busy = 0;
 		pthread_mutex_unlock(&(p->left->m));
 		pthread_mutex_lock(&(p->right->m));
 		p->right->is_busy = 0;
 		pthread_mutex_unlock(&(p->right->m));
-	}
-	else
-	{
-		pthread_mutex_lock(&(p->right->m));
-		p->right->is_busy = 0;
-		pthread_mutex_unlock(&(p->right->m));
-		pthread_mutex_lock(&(p->left->m));
-		p->left->is_busy = 0;
-		pthread_mutex_unlock(&(p->left->m));
-	}
+	//}
+	// else
+	// {
+	// 	pthread_mutex_lock(&(p->right->m));
+	// 	p->right->is_busy = 0;
+	// 	pthread_mutex_unlock(&(p->right->m));
+	// 	pthread_mutex_lock(&(p->left->m));
+	// 	p->left->is_busy = 0;
+	// 	pthread_mutex_unlock(&(p->left->m));
+	// }
 	p->nr_eat++;
 	return (0);
 }
@@ -163,7 +163,8 @@ int	p_sleep(t_philo *p)
 			check_is_dead(p, p->args);
 			return (1);
 		}
-		usleep(8900);
+		usleep(7000);
+		//usleep(8900);
 		i++;
 	}
 	return (0);
@@ -181,7 +182,7 @@ void	*routine(void	*philo)
 	{
 		if (p->args->min_nr_eat && p->nr_eat >= p->args->min_nr_eat)
 			return (NULL);
-		if (p_wait(p, p->nr))
+		if (p_wait(p, 2))
 			return (NULL);
 		if (p_eat(p))
 			return (NULL);
