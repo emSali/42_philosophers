@@ -6,7 +6,7 @@
 /*   By: esali <esali@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/18 13:05:57 by esali             #+#    #+#             */
-/*   Updated: 2023/09/26 17:08:53 by esali            ###   ########.fr       */
+/*   Updated: 2023/10/16 12:08:20 by esali            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,5 +54,12 @@ int		init_args(char **argv);
 t_philo	**init_philos(t_args *args);
 void	free_philos(t_philo **ps);
 void	start_philos(t_philo **ps, t_args *args);
+long	get_ms(struct timeval time, t_args *args);
+int		check_is_dead(t_philo *p, t_args *args);
+int		p_wait(t_philo *p, int nr);
+int		p_eat(t_philo *p);
+int		p_sleep(t_philo *p);
+void	finish_eat(t_philo *p);
+int		check_fork(t_fork *fork);
 
 #endif
